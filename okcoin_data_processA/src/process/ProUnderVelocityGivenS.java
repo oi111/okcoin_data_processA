@@ -36,6 +36,7 @@ public class ProUnderVelocityGivenS {
 	}
 
 	void init() {
+		int f = 1;
 		gg = new int[TT / FF];
 		a = new int[TT][NN];
 		sum = new int[TT / FF][NN];
