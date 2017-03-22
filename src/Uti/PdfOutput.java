@@ -1,0 +1,112 @@
+package Uti;
+
+import java.util.List;
+
+public class PdfOutput {
+	int len = 10000;
+	double xmin = 0, xmax = 1000;
+	double delt;
+	OutputFile output = new OutputFile();
+
+	public PdfOutput() {
+		openFile("PdfOutput.txt");
+	}
+
+	void init() {
+
+	}
+
+	public void setParam(int len, double xmin, double xmax) {
+		this.len = len;
+		this.xmax = xmax;
+		this.xmin = xmin;
+		this.delt = (xmax - xmin + 0.0) / len;
+	}
+
+	public void calPdf(List<Double> ld) {
+		double a[] = new double[len], tot = 0;
+		for (int i = 0; i < len; i++)
+			a[i] = 0;
+		for (int i = 0; i < ld.size(); i++) {
+			tot++;
+			if ((int) ((ld.get(i).doubleValue() - xmin) / delt) >= len
+					|| (int) ((ld.get(i).doubleValue() - xmin) / delt) < 0)
+				continue;
+			a[(int) ((ld.get(i).doubleValue() - xmin) / delt)]++;
+		}
+		for (int i = 0; i < len; i++) {
+			output.write((xmin + i * delt) + " ");
+		}
+		output.write("\n");
+		for (int i = 0; i < len; i++) {
+			output.write(a[i] / (tot + 0.0) / delt + " ");
+		}
+		output.write("\n");
+	}
+
+	public void calLogPdfToLinear(List<Double> ld) {
+		double a[] = new double[len], tot = 0;
+		for (int i = 0; i < len; i++)
+			a[i] = 0;
+		for (int i = 0; i < ld.size(); i++) {
+			double tmp = Math.log(Math.abs(ld.get(i).doubleValue()));
+			if ((int) ((tmp - xmin) / delt) >= len || (int) ((tmp - xmin) / delt) < 0)
+				continue;
+			a[(int) ((tmp - xmin) / delt)]++;
+			tot++;
+		}
+		for (int i = 0; i < len; i++) {
+			// System.out.print((xmin + i * delt) + " ");
+			output.write(Math.exp(xmin + i * delt) + " ");
+		}
+		output.write("\n");
+		// System.out.println();
+		for (int i = 0; i < len; i++) {
+			// System.out.print(a[i] / (tot + 0.0) + " ");
+			output.write(a[i] / (tot + 0.0) / Math.exp(xmin + i * delt) + " ");
+		}
+		output.write("\n");
+		// System.out.println();
+	}
+
+	public void calLogPdf(List<Double> ld) {
+		double a[] = new double[len], b[] = new double[len], tot = 0;
+		for (int i = 0; i < len; i++)
+			b[i] = a[i] = 0;
+		for (int i = 0; i < ld.size(); i++) {
+			tot++;
+			if ((int) ((Math.log10(Math.abs(ld.get(i).doubleValue())) - xmin) / delt) >= len
+					|| (int) ((Math.log10(Math.abs(ld.get(i).doubleValue())) - xmin) / delt) < 0)
+				continue;
+			if (ld.get(i).doubleValue() > 0)
+				a[(int) ((Math.log10(ld.get(i).doubleValue()) - xmin) / delt)]++;
+			if (ld.get(i).doubleValue() < 0)
+				b[(int) ((Math.log10(-ld.get(i).doubleValue()) - xmin) / delt)]++;
+		}
+		for (int i = 0; i < len; i++)
+			output.write(Math.pow(10, (xmin + (i + 1) * delt)) + " ");
+		output.write("\n");
+		for (int i = 0; i < len; i++)
+			output.write(a[i] / (tot + 0.0) / (Math.pow(10, (xmin + (i + 1) * delt)) - Math.pow(10, (xmin + i * delt)))
+					+ " ");
+		output.write("\n");
+		for (int i = 0; i < len; i++)
+			output.write(b[i] / (tot + 0.0) / (Math.pow(10, (xmin + (i + 1) * delt)) - Math.pow(10, (xmin + i * delt)))
+					+ " ");
+		output.write("\n");
+	}
+
+	public void openFile(String file) {
+		closeFile();
+		output.setFileName(file);
+		output.openFile();
+	}
+
+	public void closeFile() {
+		try {
+			output.closeFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
