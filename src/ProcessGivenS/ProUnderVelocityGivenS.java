@@ -8,6 +8,7 @@ import Data.StrOrder;
 import Uti.InputFile;
 import Uti.OutputFile;
 import Uti.PdfOutput;
+import Uti.Uti;
 
 public class ProUnderVelocityGivenS {
 	int NN = 500;
@@ -17,6 +18,7 @@ public class ProUnderVelocityGivenS {
 	int CC = 10;
 	int FF = 1;
 	int BINSIZE = 1;
+	int NORMAL = 1;
 
 	int index = -1;
 	int a[][];
@@ -25,8 +27,7 @@ public class ProUnderVelocityGivenS {
 	int mid[];
 	StrOrder pre = null, current = null;
 	List<List<List<Double>>> ld3 = new ArrayList<List<List<Double>>>();
-	int gg[];// = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180,
-				// 200 };
+	int gg[];
 	int GIVENS = 10;
 	List<List<ITK>> tltk = new ArrayList<List<ITK>>();
 
@@ -34,7 +35,7 @@ public class ProUnderVelocityGivenS {
 		// TODO Auto-generated method stub
 		ProUnderVelocityGivenS pu = new ProUnderVelocityGivenS();
 		pu.process(args[0], Integer.valueOf(args[1]), Integer.valueOf(args[2]), Integer.valueOf(args[3]),
-				Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6]));
+				Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6]), Integer.valueOf(args[7]));
 	}
 
 	void init() {
@@ -70,12 +71,13 @@ public class ProUnderVelocityGivenS {
 		}
 	}
 
-	void process(String inputfile, int limit, int tt, int givens, int ff, int binsize, int cc) {
+	void process(String inputfile, int limit, int binsize, int cc, int ff, int normal, int givens, int tt) {
 		this.TT = tt;
 		this.GIVENS = givens;
 		this.BINSIZE = binsize;
 		this.CC = cc;
 		this.FF = ff;
+		this.NORMAL = normal;
 		init();
 		InputFile input = new InputFile();
 		input.setFileName(inputfile);
@@ -92,9 +94,16 @@ public class ProUnderVelocityGivenS {
 				break;
 		}
 		input.closeFile();
-		outputTime("ProUnderVelocityGivenS_T" + TT + "S" + GIVENS + "F" + FF + "B" + BINSIZE + "C" + CC);
-		outputData("ProUnderVelocityGivenS_T" + TT + "S" + GIVENS + "F" + FF + "B" + BINSIZE + "C" + CC);
-		outputPro("ProUnderVelocityGivenS_T" + TT + "S" + GIVENS + "F" + FF + "B" + BINSIZE + "C" + CC);
+		outputTime("ProUnderVelocityGivenS_" + "B" + BINSIZE + "C" + CC + "F" + FF + "NORMAL" + NORMAL + "S" + GIVENS
+				+ "T" + TT);
+		outputSigma("ProUnderVelocityGivenS_" + "B" + BINSIZE + "C" + CC + "F" + FF + "NORMAL" + NORMAL + "S" + GIVENS
+				+ "T" + TT);
+		outputData("ProUnderVelocityGivenS_" + "B" + BINSIZE + "C" + CC + "F" + FF + "NORMAL" + NORMAL + "S" + GIVENS
+				+ "T" + TT);
+		outputPro("ProUnderVelocityGivenS_" + "B" + BINSIZE + "C" + CC + "F" + FF + "NORMAL" + NORMAL + "S" + GIVENS
+				+ "T" + TT);
+		outputNormalPro("ProUnderVelocityGivenS_" + "B" + BINSIZE + "C" + CC + "F" + FF + "NORMAL" + NORMAL + "S"
+				+ GIVENS + "T" + TT);
 	}
 
 	void addOne(String line) {
@@ -145,6 +154,19 @@ public class ProUnderVelocityGivenS {
 		output.closeFile();
 	}
 
+	void outputSigma(String outputfile) {
+		OutputFile output = new OutputFile();
+		output.setFileName(outputfile + "Sigma.txt");
+		output.openFile();
+		for (int i = 0; i < ld3.size(); i++) {
+			for (int j = 0; j < ld3.get(i).size(); j++) {
+				output.write(Uti.calSigma(ld3.get(i).get(j)) + " ");
+			}
+			output.write("\n");
+		}
+		output.closeFile();
+	}
+
 	void outputData(String outputfile) {
 		OutputFile output = new OutputFile();
 		output.setFileName(outputfile + ".txt");
@@ -173,6 +195,24 @@ public class ProUnderVelocityGivenS {
 			for (int j = 0; j < ld3.get(i).size(); j++) {
 				pdf1.calPdf(ld3.get(i).get(j));
 				pdf2.calLogPdf(ld3.get(i).get(j));
+			}
+		}
+		pdf1.closeFile();
+		pdf2.closeFile();
+	}
+
+	void outputNormalPro(String file) {
+		PdfOutput pdf1 = new PdfOutput();
+		pdf1.setParam(100, -NORMAL, NORMAL);
+		pdf1.openFile(file + "NormalPro.txt");
+		PdfOutput pdf2 = new PdfOutput();
+		pdf2.setParam(100, -3, 2);
+		pdf2.openFile(file + "AutoPro.txt");
+
+		for (int i = 0; i < ld3.size(); i++) {
+			for (int j = 0; j < ld3.get(i).size(); j++) {
+				pdf1.calNormalPdf(ld3.get(i).get(j));
+				pdf2.calAutoPdf(ld3.get(i).get(j));
 			}
 		}
 		pdf1.closeFile();

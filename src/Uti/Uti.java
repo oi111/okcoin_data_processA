@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Uti {
 
-	static double calSigma(List<Double> ld) {
+	public static double calSigma(List<Double> ld) {
 		double averager = calAverage(ld);
 		double tot = 0;
 		for (int i = 0; i < ld.size(); i++)

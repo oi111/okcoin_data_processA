@@ -1,5 +1,7 @@
 package Uti;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PdfOutput {
@@ -33,6 +35,59 @@ public class PdfOutput {
 					|| (int) ((ld.get(i).doubleValue() - xmin) / delt) < 0)
 				continue;
 			a[(int) ((ld.get(i).doubleValue() - xmin) / delt)]++;
+		}
+		for (int i = 0; i < len; i++) {
+			output.write((xmin + i * delt) + " ");
+		}
+		output.write("\n");
+		for (int i = 0; i < len; i++) {
+			output.write(a[i] / (tot + 0.0) / delt + " ");
+		}
+		output.write("\n");
+	}
+
+	public void calAutoPdf(List<Double> ld) {
+		double a[] = new double[len], tot = 0;
+		List<Double> tmp = new ArrayList<Double>();
+		double val = Uti.calSigma(ld);
+		tmp.clear();
+		for (int i = 0; i < ld.size(); i++)
+			tmp.add(ld.get(i) / val);
+		Collections.sort(tmp);
+		xmin = tmp.get((int) (tmp.size() * 0.01));
+		xmax = tmp.get((int) (tmp.size() * 0.99));
+		delt = (xmax - xmin + 0.0) / len;
+		for (int i = 0; i < len; i++)
+			a[i] = 0;
+		for (int i = (int) (tmp.size() * 0.01); i < (int) (tmp.size() * 0.99); i++) {
+			tot++;
+			if ((int) ((tmp.get(i).doubleValue() - xmin) / delt) >= len
+					|| (int) ((tmp.get(i).doubleValue() - xmin) / delt) < 0)
+				continue;
+			a[(int) ((tmp.get(i).doubleValue() - xmin) / delt)]++;
+		}
+		for (int i = 0; i < len; i++) {
+			output.write((xmin + i * delt) + " ");
+		}
+		output.write("\n");
+		for (int i = 0; i < len; i++) {
+			output.write(a[i] / (tot + 0.0) / delt + " ");
+		}
+		output.write("\n");
+	}
+
+	public void calNormalPdf(List<Double> ld) {
+		double a[] = new double[len], tot = 0;
+		double val = Uti.calSigma(ld);
+		for (int i = 0; i < len; i++)
+			a[i] = 0;
+
+		for (int i = 0; i < ld.size(); i++) {
+			tot++;
+			if ((int) ((ld.get(i).doubleValue() / val - xmin) / delt) >= len
+					|| (int) ((ld.get(i).doubleValue() / val - xmin) / delt) < 0)
+				continue;
+			a[(int) ((ld.get(i).doubleValue() / val - xmin) / delt)]++;
 		}
 		for (int i = 0; i < len; i++) {
 			output.write((xmin + i * delt) + " ");
