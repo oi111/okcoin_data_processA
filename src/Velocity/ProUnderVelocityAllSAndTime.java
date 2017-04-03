@@ -1,4 +1,4 @@
-package process;
+package Velocity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +11,12 @@ import Uti.PdfOutput;
 public class ProUnderVelocityAllSAndTime {
 	int NN = 500;
 	int TT = 40;
-	int KK = 21;
+	int VLEN = 101;
 	int LL = 10000;
 	int CC = 20;
 	int FF = 2;
 	int BEISHU = 1;
+	String OTHER = "";
 
 	int index = -1;
 	int a[][];
@@ -30,7 +31,8 @@ public class ProUnderVelocityAllSAndTime {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		ProUnderVelocityAllSAndTime pu = new ProUnderVelocityAllSAndTime();
-		pu.process(args[0], Integer.valueOf(args[1]), Integer.valueOf(args[2]), Integer.valueOf(args[3]));
+		pu.process(args[0], Integer.valueOf(args[1]), Integer.valueOf(args[2]), Integer.valueOf(args[3]),
+				Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6]), args[7]);
 	}
 
 	void init() {
@@ -52,7 +54,7 @@ public class ProUnderVelocityAllSAndTime {
 		for (int i = 0; i < mid.length; i++)
 			mid[i] = 0;
 		index = (TT - 1);
-		for (int i = 0; i < KK; i++) {
+		for (int i = 0; i < VLEN; i++) {
 			List<List<List<Double>>> tmp = new ArrayList<List<List<Double>>>();
 			tmp.clear();
 			for (int j = 0; j < TT / FF; j++) {
@@ -65,9 +67,13 @@ public class ProUnderVelocityAllSAndTime {
 		}
 	}
 
-	void process(String inputfile, int limit, int tt, int beishu) {
+	void process(String inputfile, int limit, int beishu, int cc, int ff, int tt, int vlen, String other) {
 		this.BEISHU = beishu;
 		this.TT = tt;
+		this.CC = cc;
+		this.FF = ff;
+		this.VLEN = vlen;
+		this.OTHER = other;
 		this.init();
 		InputFile input = new InputFile();
 		input.setFileName(inputfile);
@@ -84,8 +90,10 @@ public class ProUnderVelocityAllSAndTime {
 				break;
 		}
 		input.closeFile();
-		outputData("ProUnderVelocityAllSAndTime_" + TT + "_" + BEISHU);
-		outputPro("ProUnderVelocityAllSAndTime_" + TT + "_" + BEISHU);
+		outputData("ProUnderVelocityAllSAndTime_" + "B" + BEISHU + "C" + CC + "F" + FF + "T" + TT + "VL" + VLEN + "O"
+				+ OTHER);
+		outputPro("ProUnderVelocityAllSAndTime_" + "B" + BEISHU + "C" + CC + "F" + FF + "T" + TT + "VL" + VLEN + "O"
+				+ OTHER);
 	}
 
 	void addOne(String line) {
@@ -106,12 +114,12 @@ public class ProUnderVelocityAllSAndTime {
 			for (int j = 0; j < pt.length; j += CC)
 				sum[i][j] = sum[i][j] - a[(index + TT - gg[i]) % TT][j] + pt[j];
 
-			int v = (p1.mid - mid[(index + TT - gg[i]) % TT]) / this.BEISHU;
-			if (v + KK / 2 >= 0 && v + KK / 2 < KK
+			int v = (int) ((p1.mid - mid[(index + TT - gg[i]) % TT]) * 10.0 / gg[i] / this.BEISHU);
+			if (v + VLEN / 2 >= 0 && v + VLEN / 2 < VLEN
 					&& p1.time / 1000 - time[(index + TT - gg[i]) % TT] / 1000 <= gg[i] * (1 + 0.05)) {
 				for (int j = 0; j < pt.length; j += CC)
-					if (ld3.get(v + KK / 2).get(i).get(j / CC).size() < LL && sum[i][j] != 0)
-						ld3.get(v + KK / 2).get(i).get(j / CC).add((double) (sum[i][j] / 1000.0));
+					if (ld3.get(v + VLEN / 2).get(i).get(j / CC).size() < LL && sum[i][j] != 0)
+						ld3.get(v + VLEN / 2).get(i).get(j / CC).add((double) (sum[i][j] / 1000.0));
 			}
 		}
 		for (int i = 0; i < pt.length; i += CC)
