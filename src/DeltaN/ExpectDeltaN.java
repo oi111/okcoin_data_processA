@@ -33,7 +33,7 @@ public class ExpectDeltaN {
 		// TODO Auto-generated method stub
 		ExpectDeltaN pu = new ExpectDeltaN();
 		pu.process(args[0], Integer.valueOf(args[1]), Integer.valueOf(args[2]), Integer.valueOf(args[3]),
-				Integer.valueOf(args[4]), Integer.valueOf(args[5]));
+				Integer.valueOf(args[4]), Integer.valueOf(args[5]), Integer.valueOf(args[6]));
 	}
 
 	void init() {
@@ -65,7 +65,7 @@ public class ExpectDeltaN {
 		}
 	}
 
-	void process(String inputfile, int limit, int cc, int ff, int tt, int flg) {
+	void process(String inputfile, int from, int to, int cc, int ff, int tt, int flg) {
 		this.TT = tt;
 		// this.BINSIZE = binsize;
 		this.CC = cc;
@@ -79,11 +79,14 @@ public class ExpectDeltaN {
 		List<StrOrder> lls = new ArrayList<StrOrder>();
 		int n = 0;
 		while ((line = input.read()) != null) {
-			addOne(line);
-			processX(current, pre);
+			++n;
+			if (n > from && n < to) {
+				addOne(line);
+				processX(current, pre);
+			}
 			if ((++n) % 10000 == 0)
 				System.out.println(n);
-			if (n > limit)
+			if (n > to)
 				break;
 		}
 		input.closeFile();
