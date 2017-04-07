@@ -34,7 +34,8 @@ public class StatisticsData {
 		hm.clear();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		for (int i = 0; i < 350; i++) {
-			Date date = new Date(time + 24 * 60 * 60 * 1000 * i);
+			Date date = new Date(time + 24l * 60l * 60l * 1000l * i);
+			System.out.println(i + " " + sdf.format(date));
 			hm.put(sdf.format(date), i);
 			b[i] = sdf.format(date);
 		}
@@ -56,7 +57,12 @@ public class StatisticsData {
 			String pt[] = line.split(" ");
 			Date date = new Date(Long.valueOf(pt[0]));
 			String str = sdf.format(date);
-			a[hm.get(str)]++;
+			if (hm.containsKey(str))
+				a[hm.get(str)]++;
+			else
+				System.out.println(str);
+			if ((++index) % 100000 == 0)
+				System.out.println(index);
 		}
 		input.closeFile();
 	}
@@ -66,7 +72,7 @@ public class StatisticsData {
 		output.setFileName(outputfile);
 		output.openFile();
 		for (int i = 0; i < hm.size(); i++)
-			output.write(b[i] + "\n");
+			output.write("'" + b[i] + "'\n");
 		output.closeFile();
 	}
 
