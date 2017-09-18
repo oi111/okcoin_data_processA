@@ -49,14 +49,17 @@ public class PdfOutput {
 	public void calAutoPdf(List<Double> ld) {
 		double a[] = new double[len], tot = 0;
 		List<Double> tmp = new ArrayList<Double>();
-		double val = Uti.calSigma(ld);
 		tmp.clear();
-		for (int i = 0; i < ld.size(); i++)
-			tmp.add(ld.get(i) / val);
-		Collections.sort(tmp);
-		xmin = tmp.get((int) (tmp.size() * 0.01));
-		xmax = tmp.get((int) (tmp.size() * 0.99));
-		delt = (xmax - xmin + 0.0) / len;
+		if (ld.size() != 0) {
+			double val = Uti.calSigma(ld);
+
+			for (int i = 0; i < ld.size(); i++)
+				tmp.add(ld.get(i) / val);
+			Collections.sort(tmp);
+			xmin = tmp.get((int) (tmp.size() * 0.01));
+			xmax = tmp.get((int) (tmp.size() * 0.99));
+			delt = (xmax - xmin + 0.0) / len;
+		}
 		for (int i = 0; i < len; i++)
 			a[i] = 0;
 		for (int i = (int) (tmp.size() * 0.01); i < (int) (tmp.size() * 0.99); i++) {

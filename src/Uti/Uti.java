@@ -13,7 +13,7 @@ public class Uti {
 		return Math.sqrt(tot);
 	}
 
-	static double calAverage(List<Double> ld) {
+	public static double calAverage(List<Double> ld) {
 		double tot = 0;
 		for (int i = 0; i < ld.size(); i++)
 			tot += ld.get(i);
